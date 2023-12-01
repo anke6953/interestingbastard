@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Interesting Bastard</title>
+</head>
+<body>
+    <header>
+        <img src="folder/IMG_5079.jpeg" alt="Interesting Bastard">
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="articles.html">Articles</a></li>
+                <li><a href="quotes.html">Quotes</a></li>
+                <li><a href="index.html#about">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <section id="articleSubmission">
+        <h2>Submit an Article</h2>
+        <form id="articleForm">
+            <label for="articleContent">Article Content:</label>
+            <textarea id="articleContent" name="articleContent" placeholder="Write your article..."></textarea>
+
+            <label for="articleImage">Article Image:</label>
+            <input type="file" accept="image/*" id="articleImage" name="articleImage">
+
+            <button type="button" onclick="submitArticle()">Submit Article</button>
+        </form>
+    </section>
+
+    <section id="articleDisplay">
+        <h2>Submitted Articles</h2>
+        <div id="articlesList"></div>
+    </section>
+
+    <script>
+        function submitArticle() {
+            var articleContent = document.getElementById('articleContent').value;
+            var articleImageInput = document.getElementById('articleImage');
+            var articleImage = articleImageInput.files[0];
+
+            if (articleContent || articleImage) {
+                var articlesList = document.getElementById('articlesList');
+                var articleItem = document.createElement('div');
+                articleItem.className = 'article';
+
+                // Replace newline characters with <br> tags
+                var formattedContent = articleContent.replace(/\n/g, '<br>');
+
+                var articleContentElement = document.createElement('p');
+                articleContentElement.innerHTML = formattedContent; // Use innerHTML to interpret HTML tags
+                articleItem.appendChild(articleContentElement);
+
+                if (articleImage) {
+                    var articleImageElement = document.createElement('img');
+                    articleImageElement.src = URL.createObjectURL(articleImage);
+                    articleImageElement.style.maxWidth = '100%';
+                    articleItem.appendChild(articleImageElement);
+                }
+
+                var currentDate = new Date();
+                var uploadDateElement = document.createElement('small');
+                uploadDateElement.textContent = 'Submitted on ' + currentDate.toLocaleString();
+                articleItem.appendChild(uploadDateElement);
+
+                articlesList.appendChild(articleItem);
+
+                document.getElementById('articleContent').value = '';
+                articleImageInput.value = '';
+            } else {
+                alert('Please enter article content or attach an image.');
+            }
+        }
+
+        // Load existing articles from local storage on page load
+        window.onload = function () {
+            var articlesList = document.getElementById('articlesList');
+  
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+  
+                if (key.startsWith('article_')) {
+                    var articleData = JSON.parse(localStorage.getItem(key));
+                    displayArticle(articleData, key);
+                }
+            }
+        };
+    </script>
+
+  <footer>
+      <p>&copy; 2023 Interesting Bastard. All rights reserved.</p>
+  </footer>
+  
+</body>
+</html>
